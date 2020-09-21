@@ -5,13 +5,13 @@ import (
 	"os"
 )
 
-// Split is split yuv data of a yuv file
+// Splityuv420p is split yuv data of a yuv file
 // save yuv data to 3 file
 // todo:
 // refine: 重构减少代码量
 // refine: 支持读多帧
 // refine: 丰富错误处理(eg:num范围异常/yuv EOF支持)
-func Split(yuvfile string, w, h, num int) (err error) {
+func Splityuv420p(yuvfile string, w, h, num int) (err error) {
 	yuv, err := os.Open(yuvfile)
 	if err != nil {
 		fmt.Println("open file error:", err)
@@ -20,7 +20,7 @@ func Split(yuvfile string, w, h, num int) (err error) {
 
 	defer yuv.Close()
 
-	y, err := os.OpenFile(yuvfile + ".y", os.O_CREATE, 0644)
+	y, err := os.OpenFile(yuvfile + ".y.yuv", os.O_CREATE, 0644)
 	if err != nil {
 		fmt.Println("create y file error:", err)
 		return
@@ -28,7 +28,7 @@ func Split(yuvfile string, w, h, num int) (err error) {
 
 	defer y.Close()
 
-	u, err := os.OpenFile(yuvfile + ".u", os.O_CREATE, 0644)
+	u, err := os.OpenFile(yuvfile + ".u.yuv", os.O_CREATE, 0644)
 	if err != nil {
 		fmt.Println("create u file error:", err)
 		return
@@ -36,7 +36,7 @@ func Split(yuvfile string, w, h, num int) (err error) {
 
 	defer u.Close()
 
-	v, err := os.OpenFile(yuvfile + ".v", os.O_CREATE, 0644)
+	v, err := os.OpenFile(yuvfile + ".v.yuv", os.O_CREATE, 0644)
 	if err != nil {
 		fmt.Println("create v file error:", err)
 		return
@@ -64,7 +64,7 @@ func Split(yuvfile string, w, h, num int) (err error) {
 	}
 
 	if _, err = u.Write(uBuf); err != nil {
-		fmt.Println("write y file error:", err)
+		fmt.Println("write u file error:", err)
 		return
 	}
 
@@ -74,18 +74,18 @@ func Split(yuvfile string, w, h, num int) (err error) {
 	}
 
 	if _, err = v.Write(vBuf); err != nil {
-		fmt.Println("write y file error:", err)
+		fmt.Println("write v file error:", err)
 		return
 	}
 
 	return nil
 }
 
-// SplitOneFrame is split 1 frame of Split
-func SplitOneFrame(yuvfile string, w,h int)error{
-	return Split(yuvfile, w,h, 1)
+// SplitOneFrameyuv420p is split 1 frame of Split
+func SplitOneFrameyuv420p(yuvfile string, w,h int)error{
+	return Splityuv420p(yuvfile, w,h, 1)
 }
 
 func main(){
-	SplitOneFrame("./a.yuv", 1920, 1200)
+	SplitOneFrameyuv420p("./a.yuv", 1920, 1200)
 }
